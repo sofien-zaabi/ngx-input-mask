@@ -1,0 +1,375 @@
+/* You can add global styles to this file, and also import other style files */
+/* CSS Document */
+
+:root {
+  --main-color: #074d96;
+  --second-color: #ff0000;
+}
+/********************************************************
+         general css rules 
+*********************************************************/
+
+/*  * {
+  margin: 0;
+  padding: 0
+} */
+
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+
+body {
+  background: #fafafa !important;
+  font-size: 14px;
+  color: #000;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 100%
+}
+
+
+article, aside, details, figcaption, figure, footer, header, nav, section {
+  display: block
+}
+
+dl, ol, ul {
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6, fieldset > legend {
+  color: #000;
+}
+
+li {
+  list-style: none
+}
+
+hr {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+  border-top: 1px solid rgb(207, 215, 219);
+}
+
+a {
+  display: inline-block;
+  color: #4f5467;
+  -webkit-transition: color .3s ease-in-out;
+  transition: color .3s ease-in-out;
+  text-decoration: none;
+  cursor: pointer
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+label {
+  font-size: 14px;
+  color: #000;
+}
+
+.text-normal {
+  font-size: 1rem !important;
+}
+
+/********************************************************
+           override css of bootstrap
+*********************************************************/
+
+.text-medium {
+  font-family: 'robotomedium' !important
+}
+
+.text-success {
+  color: #31aa13 !important
+}
+
+.text-danger {
+  color: var(--second-color) !important
+}
+
+.bg-primary {
+  color: var(--main-color) !important
+}
+
+.bg-success {
+  color: #31aa13 !important
+}
+
+.bg-danger {
+  color: var(--second-color) !important
+}
+
+.form-control {
+  font-size: 14px;
+  padding: .5rem .75rem;
+  line-height: 1.25;
+  color: #000;
+}
+
+.form-control:focus {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+}
+
+.btn.focus, .btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.col-form-label {
+  padding-top: calc(.5rem - 1px * 2);
+  padding-bottom: calc(.5rem - 1px * 2);
+}
+
+.btn-sm {
+  padding: .35rem .5rem !important;
+  font-size: .875rem !important;
+  min-width: 80px;
+}
+
+.header img {
+  width: 100%;
+  max-width: 28px;
+  max-height: 46px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.header .logo-wrap img {
+  max-width: 100%;
+}
+
+.img-thumbnail {
+  max-width: 120px;
+}
+
+.header svg {
+  width: 100%;
+  max-width: 28px;
+  max-height: 28px;
+  margin-top: 6px;
+}
+
+.header .logo-wrap svg {
+  max-width: 130px;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+.wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.global-container {
+  padding: 20px 30px;
+  float: left;
+  width: 100%;
+  margin-top: 60px;
+}
+
+.header-content {
+  width: 100%;
+  float: left;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.header-content .title-container {
+  margin: auto;
+  margin-left: 0;
+  align-self: flex-start;
+}
+
+.header-content .content-title {
+  margin: 0;
+}
+
+.header-content .header-action-container {
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.content-container {
+  width: 100%;
+  float: left;
+  margin-top: 20px;
+}
+
+.form-control.disabled {
+  background-color: #e9ecef;
+  opacity: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.page-title-row {
+  padding: 0 0 15px 15px;;
+}
+
+.page-title {
+  line-height: 30px;
+  font-size: 22px;
+  font-weight: 400;
+  color: #20263e;
+  margin-bottom: 0;
+}
+
+.sub-title {
+  font-size: 1.2rem;
+  font-weight: normal;
+  line-height: 1;
+  padding: 6px 0;
+  border-bottom: 1px solid #cfd7db;
+  margin-bottom: 10px;
+}
+
+
+/********************************************************
+             header css rules
+*********************************************************/
+
+.navbar.navbar-inverse.navbar-fixed-top {
+  display: table-cell;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  border-bottom: none;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
+  margin-bottom: 0;
+  min-height: 55px;
+  padding: 0;
+}
+
+.navbar.navbar-inverse {
+  background: #fff;
+}
+
+.home .navbar.navbar-inverse {
+  background: transparent;
+  box-shadow: none;
+}
+
+.navbar-fixed-top {
+  top: 0;
+  border-width: 0 0 1px;
+}
+
+.nav-header {
+  width: 280px;
+  height: 55px;
+  display: table-cell;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  justify-self: flex-start;
+  align-items: center;
+}
+
+.large-menu {
+  width: calc(100% - 380px);
+  height: 55px;
+  display: table-cell;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-item-align: center;
+  justify-self: center;
+  flex-basis: auto;
+  justify-content: center;
+}
+
+.nav-action {
+  width: 100px;
+  height: 55px;
+  display: table-cell;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-item-align: end;
+  justify-self: flex-end;
+  justify-content: center;
+}
+
+.large-menu .navbar-menu {
+  -ms-flex-direction: row;
+  flex-direction: row;
+  height: 100%;
+}
+
+.navbar-menu .menu-item {
+  position: relative;
+  display: table-cell;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.large-menu .menu-item.mobile-only {
+  display: none;
+}
+
+.navbar-menu .menu-item:hover {
+  border-bottom: 2px solid var(--main-color);
+}
+
+.navbar-menu .menu-item:hover .nav-link {
+  color: var(--main-color);
+}
+
+/* .menu-item .nav-link.active {
+    border-bottom: 2px solid var(--main-color);
+} */
+.navbar-menu .nav-link {
+  padding: 0px 18px;
+  font-size: 15px;
+  color: #000;
+  text-align: center;
+  width: 100%;
+  line-height: 55px;
+}
+
+.logo-wrap {
+  align-self: center;
+  /*padding-left: 20px; */
+  margin-left: 20px;
+}
+
+.toggle-left-nav-btn {
+  margin-left: 15px;
+  align-items: center;
+  display: flex;
+}
+
+.icon-Burger, .icon-menu {
+  font-size: 18px;
+}
+
+.toggle-right-nav-btn {
+  display: none;
+}
+
+.brand-img {
+  max-width: 160px;
+}

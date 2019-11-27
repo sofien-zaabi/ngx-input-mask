@@ -1,0 +1,165 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ngx-input-mask": {
+      "projectType": "library",
+      "root": "projects/ngx-input-mask",
+      "sourceRoot": "projects/ngx-input-mask/src",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-input-mask/tsconfig.lib.json",
+            "project": "projects/ngx-input-mask/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-input-mask/src/test.ts",
+            "tsConfig": "projects/ngx-input-mask/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-input-mask/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-input-mask/tsconfig.lib.json",
+              "projects/ngx-input-mask/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-input-mask-app": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/ngx-input-mask-app",
+      "sourceRoot": "projects/ngx-input-mask-app/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ngx-input-mask-app",
+            "index": "projects/ngx-input-mask-app/src/index.html",
+            "main": "projects/ngx-input-mask-app/src/main.ts",
+            "polyfills": "projects/ngx-input-mask-app/src/polyfills.ts",
+            "tsConfig": "projects/ngx-input-mask-app/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "projects/ngx-input-mask-app/src/favicon.ico",
+              "projects/ngx-input-mask-app/src/assets"
+            ],
+            "styles": [
+              "projects/ngx-input-mask-app/src/assets/bootstrap.min.css",
+              "projects/ngx-input-mask-app/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/ngx-input-mask-app/src/environments/environment.ts",
+                  "with": "projects/ngx-input-mask-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ngx-input-mask-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ngx-input-mask-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ngx-input-mask-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-input-mask-app/src/test.ts",
+            "polyfills": "projects/ngx-input-mask-app/src/polyfills.ts",
+            "tsConfig": "projects/ngx-input-mask-app/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-input-mask-app/karma.conf.js",
+            "assets": [
+              "projects/ngx-input-mask-app/src/favicon.ico",
+              "projects/ngx-input-mask-app/src/assets"
+            ],
+            "styles": [
+              "projects/ngx-input-mask-app/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-input-mask-app/tsconfig.app.json",
+              "projects/ngx-input-mask-app/tsconfig.spec.json",
+              "projects/ngx-input-mask-app/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/ngx-input-mask-app/e2e/protractor.conf.js",
+            "devServerTarget": "ngx-input-mask-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ngx-input-mask-app:serve:production"
+            }
+          }
+        }
+      }
+    }},
+  "defaultProject": "ngx-input-mask"
+}
