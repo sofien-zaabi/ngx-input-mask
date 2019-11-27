@@ -1,7 +1,7 @@
 
 
 export const maskPatterns = {
-  'A': /\w/,
+  'A': /[a-zA-Z]/,
   '0': /\d/,
   '9': /\d/,
   'y': /\d/,
@@ -10,7 +10,7 @@ export const maskPatterns = {
   'M': /\d/,
   'h': /\d/,
   's': /\d/,
-  '?': /\w|\d/
+  '?': /\w/
 };
 
 export const monthDaysMax = {
