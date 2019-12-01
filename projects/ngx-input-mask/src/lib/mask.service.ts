@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { maskPatterns, monthDaysMax, maskSpecialChars } from './mask.config';
+import { maskPatterns, monthDaysMax, maskSpecialChars, dateTimeSeparators } from './mask.config';
 
 @Injectable()
 export class MaskService {
@@ -8,6 +8,7 @@ export class MaskService {
   shiftSteps: number = 0;
   maskValue: any;
   maskSpecialChars : string[] = maskSpecialChars;
+  dateTimeSeparators: string[] = dateTimeSeparators;
   maskPatterns: {} = maskPatterns;
   constructor() { }
 
@@ -45,6 +46,11 @@ export class MaskService {
             pos += 1;
             this.shiftSteps += 1;
             i--;
+            continue;
+          }
+        }
+        if (mask[pos - 1] === 'm' || mask[pos - 1] === 's') {
+          if (Number(value.slice(pos - 1, pos + 1)) > 59) {
             continue;
           }
         }
@@ -136,6 +142,40 @@ export class MaskService {
       }
 
     }
+  }
+
+  
+  autoCompleteDate(value: string, mask: string) {
+    if (value) {
+      let result: Array<any> = new Array(3);
+      const d = new Date();
+      const monthIdx: number | null = mask ? mask.indexOf('M') : null;
+      const dayIdx: number | null = mask ? mask.indexOf('d') : null;
+      const yearIdx: number | null = mask ? mask.indexOf('y') : null;
+      const sepChar: string | null = dayIdx > -1 && monthIdx > -1 && mask[dayIdx + 2] === mask[monthIdx + 2] ? mask[dayIdx + 2] : null;
+      if (yearIdx > -1 && (!value.slice(yearIdx, yearIdx + 4) || value.slice(yearIdx, yearIdx + 4).trim().length < 4)) {
+        result[2] = d.getFullYear();
+        if (monthIdx > -1 && !value.slice(monthIdx, monthIdx + 2)) {
+          monthIdx === 0 ? result[0] = d.getMonth() : result[1] = d.getMonth();
+        } else {
+          const monthVal = value.slice(monthIdx, monthIdx + 2).trim().length == 1 ? "0" + value.slice(monthIdx, monthIdx + 2) : value.slice(monthIdx, monthIdx + 2);
+          monthIdx === 0 ? result[0] = monthVal : result[1] = monthVal;
+        }
+        if (dayIdx > -1 && !value.slice(dayIdx, dayIdx + 2)) {
+          dayIdx === 0 ? result[0] = d.getDate() : result[1] = d.getDate();
+        } else {
+          const DayVal = value.slice(dayIdx, dayIdx + 2).trim().length == 1 ? "0" + value.slice(dayIdx, dayIdx + 2) : value.slice(dayIdx, dayIdx + 2);
+          dayIdx === 0 ? result[0] = DayVal : result[1] = DayVal;
+        }
+          return sepChar ? result.join(sepChar).trim() : value;
+      } else
+         return value;
+    }
+  }
+
+  timeAutoComplete(value: string, mask: string) {
+    // TO DO 
+    return value;
   }
 
   private checkMaskChar(inputChar: string, maskChar: string): boolean {

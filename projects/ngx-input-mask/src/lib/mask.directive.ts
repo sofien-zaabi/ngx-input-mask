@@ -1,6 +1,8 @@
 import {Directive, ElementRef, HostListener, Input, OnChanges, Renderer2, SimpleChanges} from '@angular/core';
 import {NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor} from '@angular/forms';
 import { MaskService } from './mask.service';
+import { dateMasks, timeMasks } from './mask.config';
+import { isNumber } from 'util';
 
 const noop = () => {};
 
@@ -32,6 +34,7 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log("ngOnChanges ", changes);
     const {mask, maskSpecialChars, patterns, dateAutoComplete} = changes;
     if (mask) {
       this.maskService.maskValue = mask.currentValue || '';
@@ -115,11 +118,27 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
     const elem: HTMLInputElement = e.target as HTMLInputElement;
     let value: string = elem.value;
     if(value && this.maskService.maskValue ) {
-      this.onValueChange(value);
       if(this.dateAutoComplete) {
-        this.displayValue = this.autoCompleteDate(this.displayValue, this.maskService.maskValue );
+        let dateTimeSep: string | undefined = this.maskService.dateTimeSeparators.find(separator => this.maskService.maskValue.trim().includes(separator));
+        let maskParts: any = this.maskService.maskValue;
+        let dateParts, dateIdx, timeIdx: any;
+        if(dateTimeSep) {
+          maskParts = this.maskService.maskValue.split(dateTimeSep);
+          dateParts = new Array(maskParts.length);
+          dateIdx = Array.isArray(maskParts) ? maskParts.findIndex(part => dateMasks.includes(part)) : null;
+          timeIdx = Array.isArray(maskParts) ? maskParts.findIndex(part => timeMasks.includes(part)) : null;
+        }
+        if(isNumber(dateIdx) && dateIdx > -1 && isNumber(timeIdx) && timeIdx > -1) {
+          dateParts[dateIdx] = this.maskService.autoCompleteDate(value, maskParts[dateIdx]);
+          dateParts[timeIdx] = this.maskService.timeAutoComplete(value, maskParts[timeIdx]);
+        } else if (dateMasks.includes(maskParts)) {
+          dateParts = this.maskService.autoCompleteDate(value, maskParts);
+        } else if(timeMasks.includes(maskParts)) {
+          dateParts = this.maskService.timeAutoComplete(value, maskParts);
+        }
+        value = dateTimeSep ?  dateParts.join(dateTimeSep).slice(0, this.maskService.maskValue.length) : dateParts ? dateParts : value;
       }
-      this.value = this.maskService.unmask(value, this.maskService.maskValue );
+      this.onValueChange(value);
     }
   }
 
@@ -188,26 +207,6 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
 
   
 
-  private autoCompleteDate(value: string, mask: string) {
-    if (value) {
-      let result: Array<any> = new Array(3);
-      const d = new Date();
-      const monthIdx: number | null = mask ? mask.indexOf('M') : null;
-      const dayIdx: number | null = mask ? mask.indexOf('d') : null;
-      const yearIdx: number | null = mask ? mask.indexOf('y') : null;
-      const sepChar: string | null = dayIdx > -1 && monthIdx > -1 && value[dayIdx + 2] === value[monthIdx + 2] ? value[dayIdx + 2] : null;
-      if (yearIdx > -1 && !value.slice(yearIdx, yearIdx + 4)) {
-        result[2] = d.getFullYear();
-        if (monthIdx > -1 && !value.slice(monthIdx, monthIdx + 2)) {
-          monthIdx === 0 ? result[0] = d.getMonth() : result[1] = d.getMonth();
-        } else monthIdx === 0 ? result[0] = value.slice(monthIdx, monthIdx + 2) : result[1] = value.slice(monthIdx, monthIdx + 2);
-        if (dayIdx > -1 && !value.slice(dayIdx, dayIdx + 2)) {
-          dayIdx === 0 ? result[0] = d.getDate() : result[1] = d.getDate();
-        } else dayIdx === 0 ? result[0] = value.slice(dayIdx, dayIdx + 2) : result[1] = value.slice(dayIdx, dayIdx + 2);
-        return sepChar ? result.join(sepChar) : value;
-      }
-    }
-  }
 
 
 

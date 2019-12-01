@@ -31,4 +31,8 @@ export const monthDaysMax = {
 
 export const maskSpecialChars = ['-', '/', '(', ')', '.', ':', ' ', '+', ',', '@', '[', ']', '"', "'"];
 
-export const dateTimeMasks: string[] = ['d0/M0/0000', 'd0/M0', 'M0/d0/0000', 'M0/d0', 'Hh:m0:s0', 'Hh:m0', 'm0:s0'];
+export const dateMasks: string[] = ['d0/M0/y000', 'd0/M0', 'M0/d0/y000', 'M0/d0'];
+
+export const timeMasks: string[] = ['h0:m0:s0', 'h0:m0', 'm0:s0'];
+
+export const dateTimeSeparators: string[] = [' ', 'T'];
