@@ -1,8 +1,6 @@
 import {Directive, ElementRef, HostListener, Input, OnChanges, Renderer2, SimpleChanges} from '@angular/core';
 import {NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor} from '@angular/forms';
 import { MaskService } from './mask.service';
-import { dateMasks, timeMasks } from './mask.config';
-import { isNumber } from 'util';
 
 const noop = () => {};
 
@@ -119,24 +117,7 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
     let value: string = elem.value;
     if(value && this.maskService.maskValue ) {
       if(this.dateAutoComplete) {
-        let dateTimeSep: string | undefined = this.maskService.dateTimeSeparators.find(separator => this.maskService.maskValue.trim().includes(separator));
-        let maskParts: any = this.maskService.maskValue;
-        let dateParts, dateIdx, timeIdx: any;
-        if(dateTimeSep) {
-          maskParts = this.maskService.maskValue.split(dateTimeSep);
-          dateParts = new Array(maskParts.length);
-          dateIdx = Array.isArray(maskParts) ? maskParts.findIndex(part => dateMasks.includes(part)) : null;
-          timeIdx = Array.isArray(maskParts) ? maskParts.findIndex(part => timeMasks.includes(part)) : null;
-        }
-        if(isNumber(dateIdx) && dateIdx > -1 && isNumber(timeIdx) && timeIdx > -1) {
-          dateParts[dateIdx] = this.maskService.autoCompleteDate(value, maskParts[dateIdx]);
-          dateParts[timeIdx] = this.maskService.timeAutoComplete(value, maskParts[timeIdx]);
-        } else if (dateMasks.includes(maskParts)) {
-          dateParts = this.maskService.autoCompleteDate(value, maskParts);
-        } else if(timeMasks.includes(maskParts)) {
-          dateParts = this.maskService.timeAutoComplete(value, maskParts);
-        }
-        value = dateTimeSep ?  dateParts.join(dateTimeSep).slice(0, this.maskService.maskValue.length) : dateParts ? dateParts : value;
+        value = this.maskService.dateTimeAutoComplete(value);
       }
       this.onValueChange(value);
     }
