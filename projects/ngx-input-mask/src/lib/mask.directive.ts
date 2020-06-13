@@ -1,5 +1,5 @@
 import {Directive, ElementRef, HostListener, Input, OnChanges, Renderer2, SimpleChanges} from '@angular/core';
-import {NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor} from '@angular/forms';
+import {NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, FormControl, Validator} from '@angular/forms';
 import { MaskService } from './mask.service';
 
 const noop = () => {};
@@ -12,12 +12,13 @@ const noop = () => {};
     MaskService
   ]
 })
-export class MaskDirective implements ControlValueAccessor, OnChanges {
+export class MaskDirective implements ControlValueAccessor, OnChanges, Validator {
 
-  @Input() public mask: any;
-  @Input() public maskSpecialChars: string[] = [];
-  @Input() public patterns: {} = {};
-  @Input() public dateAutoComplete: boolean;
+  @Input() mask: any;
+  @Input() maskSpecialChars: string[] = [];
+  @Input() patterns: {} = {};
+  @Input() dateAutoComplete: boolean = false;
+  @Input() keepMask: boolean = true;
 
   private value: string = null;
   private displayValue: string = null;
@@ -25,15 +26,15 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
 
   // Placeholders for the callbacks which are later providesd
   // by the Control Value Accessor
-  private onTouchedCallback: () => void = noop;
-  private onChangeCallback: (a: any) => void = noop;
+  private onTouchedCallback: (a: any) => void = noop;
+  private onChangedCallback: (a: any) => void = noop;
 
   constructor(private elem: ElementRef, private maskService: MaskService, private renderer: Renderer2) {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log("ngOnChanges ", changes);
-    const {mask, maskSpecialChars, patterns, dateAutoComplete} = changes;
+    //console.log("ngOnChanges ", changes);
+    const {mask, maskSpecialChars, patterns, dateAutoComplete, keepMask} = changes;
     if (mask) {
       this.maskService.maskValue = mask.currentValue || '';
     }
@@ -55,6 +56,9 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
     if (dateAutoComplete) {
       this.dateAutoComplete = dateAutoComplete.currentValue;
     }
+    if(keepMask && !keepMask.currentValue) {
+      this.keepMask = keepMask.currentValue;
+    }
   }
 
   // From ControlValueAccessor interface
@@ -63,19 +67,28 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
       this.displayValue = this.maskService.applyMask(value, this.maskService.maskValue );
       if (this.displayValue) {
         this.renderer.setProperty(this.elem.nativeElement, 'value', this.displayValue);
+        this.value = this.maskService.unmask(this.displayValue);
+        // workaround
+        //this.elem.nativeElement.dispatchEvent(new Event('change'));
       }
     }
   }
 
   // From ControlValueAccessor interface
   registerOnChange(fn: any) {
-    this.onChangeCallback = fn;
+    console.log("registerOnChange", fn);
+    this.onChangedCallback = fn;
   }
 
   // From ControlValueAccessor interface
   registerOnTouched(fn: any) {
     this.onTouchedCallback = fn;
   }
+
+  // From Validator interface
+  public validate(c: FormControl): any {
+    return null;
+}
 
   @HostListener('input', ['$event'])
   public onInput(event: { target: { value?: string } }): void {
@@ -108,7 +121,7 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
 
   @HostListener('blur', ['$event'])
   public onBlur(e: Event): void {
-    const el: HTMLInputElement = e.target as HTMLInputElement;
+    const elem: HTMLInputElement = e.target as HTMLInputElement;
   }
 
   @HostListener('change', ['$event'])
@@ -117,9 +130,17 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
     let value: string = elem.value;
     if(value && this.maskService.maskValue ) {
       if(this.dateAutoComplete) {
-        value = this.maskService.dateTimeAutoComplete(value);
+        value = this.maskService.dateAutoComplete(value);
       }
       this.onValueChange(value);
+      if(this.keepMask) {
+        console.log('mask directive change displayValue', this.displayValue);
+        this.onChangedCallback(this.displayValue);
+        this.onTouchedCallback(this.displayValue);
+      } else {
+        this.onChangedCallback(this.value);
+        this.onTouchedCallback(this.value);
+      }
     }
   }
 
@@ -138,37 +159,7 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
     }
   }
 
-  /* private updateValue(value: string) {
-    this.value = value;
-    MaskDirective.delay().then(
-     // () => this.ngControl.control.updateValueAndValidity()
-    );
-  } */
 
-  /* private defineValue() {
-    let value: string = this.value;
-    let displayValue: string = null;
-
-    if (this.maskService.maskValue ) {
-      if (value != null) {
-        displayValue = this.maskService.applyMask(value, this.maskService.maskValue );
-      }
-    } else {
-      displayValue = this.value;
-    }
-
-    MaskDirective.delay().then(() => {
-      if (this.displayValue !== displayValue) {
-        this.displayValue = displayValue;
-        //this.ngControl.control.setValue(displayValue);
-        return MaskDirective.delay();
-      }
-    }).then(() => {
-      if (value != this.value) {
-        //return this.updateValue(value);
-      }
-    });
-  } */
 
   private onValueChange(newValue: string) {
     if (newValue !== null && newValue !== undefined && newValue.trim() !== "" && newValue !== this.displayValue) {
@@ -177,7 +168,7 @@ export class MaskDirective implements ControlValueAccessor, OnChanges {
         this.displayValue = this.maskService.applyMask(newValue, this.maskService.maskValue );
       }
       this.renderer.setProperty(this.elem.nativeElement, "value", this.displayValue);
-      this.value = this.maskService.unmask(newValue, this.maskService.maskValue );
+      this.value = this.maskService.unmask(this.displayValue);
     }
   }
 

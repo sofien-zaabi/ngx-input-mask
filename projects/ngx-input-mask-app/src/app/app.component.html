@@ -59,22 +59,21 @@
         <div class="form-group row">
           <label class="col-4 col-form-label">Date mask with validation</label>
           <div class="col-8">
-            <input class="form-control"  mask="M0/d0/y000Th0:m0:s0" dateAutoComplete="true" name="validDate" type="text"/>
+            <input class="form-control"  mask="MM/dd/yyyyTh0:m0:s0" dateAutoComplete="true" name="validDate" type="text"/>
           </div>
         </div>
-        <!-- <form class="form-group row" (ngSubmit)="onSubmit()" #dateForm="ngForm">
+        <!-- <form class="form-group row" (ngSubmit)="onSubmit()" #templateDateForm="ngForm">
               <label class="col-4 col-form-label" for="name">DateTime mask with validation</label>
               <div class="col-8"> 
                 <input class="form-control"  mask="d9/M9/9999 h9:m9:s9" name="releaseDate" type="text"/>
               </div>
-        </form>
-        <form class="form-group row" [formGroup]="dateForm">
+        </form> -->
+        <form class="form-group row" [formGroup]="reactiveDateForm">
           <label class="col-4 col-form-label" for="name">Date mask with autocomplete</label>
           <div class="col-8"> 
-            <input class="form-control" formControlName="date"  mask="d9/M9/9999" type="text"/>
-
+            <input class="form-control" formControlName="date"  mask="dd/MM/yyyy" type="text" (change)="reactiveFormChange($event.target.value)"/>
           </div>
-        </form> -->
+        </form> 
       </div>
     </div>
   
